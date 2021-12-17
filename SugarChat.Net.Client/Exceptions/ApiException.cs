@@ -21,6 +21,7 @@ namespace SugarChat.Net.Client.Exceptions
 
         public override string ToString()
         {
+
             return string.Format("HTTP Response: \n\n{0}\n\n{1}", Response, base.ToString());
         }
     }
