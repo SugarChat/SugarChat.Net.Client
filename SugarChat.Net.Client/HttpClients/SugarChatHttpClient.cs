@@ -265,7 +265,7 @@ namespace SugarChat.Net.Client.HttpClients
             string requestUrl;
             if (request.PageSettings is null)
             {
-                requestUrl = $"{_getGroupListUrl}?id={request.UserId}";
+                requestUrl = $"{_getGroupListUrl}?userId={request.UserId}";
             }
             else
             {
