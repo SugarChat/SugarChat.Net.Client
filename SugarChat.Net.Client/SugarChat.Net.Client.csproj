@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <PackageReference Include="SugarChat.Message" Version="1.0.1-publishToNuget.3" />
+    <PackageReference Include="SugarChat.Message" Version="1.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 
