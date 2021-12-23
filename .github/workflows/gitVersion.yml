@@ -1,0 +1,32 @@
+name: GitVersion
+
+on:
+  push:
+    branches: [ ]
+
+  workflow_dispatch:
+
+jobs:
+  publish_to_nuget:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0.9.7
+        with:
+          versionSpec: '5.x'
+        
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      
+      - name: Determine Version
+        id: gitversion
+        uses: gittools/actions/gitversion/execute@v0.9.7
+
+      - name: Display SemVer
+        run: |
+          echo "SemVer: $GITVERSION_SEMVER"
+          echo "SemVer: ${{ steps.gitversion.outputs.semVer }}"
