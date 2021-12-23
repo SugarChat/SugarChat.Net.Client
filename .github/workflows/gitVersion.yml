@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  publish_to_nuget:
+  gitVersion:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
