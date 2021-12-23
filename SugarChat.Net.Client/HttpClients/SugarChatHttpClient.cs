@@ -265,11 +265,11 @@ namespace SugarChat.Net.Client.HttpClients
             string requestUrl;
             if (request.PageSettings is null)
             {
-                requestUrl = $"{_getGroupListUrl}?id={request.UserId}";
+                requestUrl = $"{_getGroupListUrl}?userId={request.UserId}";
             }
             else
             {
-                requestUrl = $"{_getGroupListUrl}?id={request.UserId}&pageSettings.pageSize={request.PageSettings.PageSize}&pageSettings.pageNum={request.PageSettings.PageNum}";
+                requestUrl = $"{_getGroupListUrl}?userId={request.UserId}&pageSettings.pageSize={request.PageSettings.PageSize}&pageSettings.pageNum={request.PageSettings.PageNum}";
             }
             return await ExecuteAsync<SugarChatResponse<PagedResult<GroupDto>>>(requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
