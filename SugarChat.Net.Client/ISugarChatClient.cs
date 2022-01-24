@@ -133,6 +133,10 @@ namespace SugarChat.Net.Client
 
         Task<SugarChatResponse<MessageTranslateDto>> TranslateMessageAsync(TranslateMessageCommand command, CancellationToken cancellationToken = default);
 
-        Task<SugarChatResponse> SetMessageReadByUserIdsBasedOnGroupId(SetMessageReadByUserIdsBasedOnGroupIdCommand command, CancellationToken cancellationToken = default);
+        Task<SugarChatResponse> SetMessageReadByUserIdsBasedOnGroupIdAsync(SetMessageReadByUserIdsBasedOnGroupIdCommand command, CancellationToken cancellationToken = default);
+
+        Task<SugarChatResponse> UpdateMessageAsync(UpdateMessageCommand command, CancellationToken cancellationToken = default);
+
+        Task<SugarChatResponse> UpdateGroupUserAsync(UpdateGroupUserCommand command, CancellationToken cancellationToken = default);
     }
 }

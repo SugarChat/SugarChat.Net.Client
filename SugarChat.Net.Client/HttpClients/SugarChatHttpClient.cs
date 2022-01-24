@@ -73,7 +73,8 @@ namespace SugarChat.Net.Client.HttpClients
         private const string _batchAddUsersUrl = "api/user/batchAddUsers";
         private const string _translateMessageUrl = "api/message/translate";
         private const string _setMessageReadByUserIdsBasedOnGroupIdUrl = "api/conversation/setMessageReadByUserIdsBasedOnGroupId";
-
+        private const string _updateMessageUrl = "api/Message/updateMessage";
+        private const string _updateGroupUserUrl = "api/GroupUser/UpdateGroupUser";
 
         private string _baseUrl = "";
         public SugarChatHttpClient(string baseUrl)
@@ -440,9 +441,19 @@ namespace SugarChat.Net.Client.HttpClients
             return await ExecuteAsync<SugarChatResponse<MessageTranslateDto>>(_translateMessageUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> SetMessageReadByUserIdsBasedOnGroupId(SetMessageReadByUserIdsBasedOnGroupIdCommand command, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse> SetMessageReadByUserIdsBasedOnGroupIdAsync(SetMessageReadByUserIdsBasedOnGroupIdCommand command, CancellationToken cancellationToken = default)
         {
             return await ExecuteAsync<SugarChatResponse>(_setMessageReadByUserIdsBasedOnGroupIdUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
+        }
+
+        public async Task<SugarChatResponse> UpdateMessageAsync(UpdateMessageCommand command, CancellationToken cancellationToken = default)
+        {
+            return await ExecuteAsync<SugarChatResponse>(_updateMessageUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
+        }
+
+        public async Task<SugarChatResponse> UpdateGroupUserAsync(UpdateGroupUserCommand command, CancellationToken cancellationToken = default)
+        {
+            return await ExecuteAsync<SugarChatResponse>(_updateGroupUserUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
         }
     }
 }
