@@ -75,6 +75,8 @@ namespace SugarChat.Net.Client.HttpClients
         private const string _setMessageReadByUserIdsBasedOnGroupIdUrl = "api/conversation/setMessageReadByUserIdsBasedOnGroupId";
         private const string _updateMessageUrl = "api/Message/updateMessage";
         private const string _updateGroupUserUrl = "api/GroupUser/UpdateGroupUser";
+        private const string _removeUserFromGroupUrl = "api/GroupUser/RemoveUserFromGroup";
+        private const string _removeAllGroupMemberUrl = "api/GroupUser/RemoveAllGroupMember";
 
         private string _baseUrl = "";
         public SugarChatHttpClient(string baseUrl)
@@ -454,6 +456,16 @@ namespace SugarChat.Net.Client.HttpClients
         public async Task<SugarChatResponse> UpdateGroupUserAsync(UpdateGroupUserCommand command, CancellationToken cancellationToken = default)
         {
             return await ExecuteAsync<SugarChatResponse>(_updateGroupUserUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
+        }
+
+        public async Task<SugarChatResponse> RemoveUserFromGroupAsync(RemoveUserFromGroupCommand command, CancellationToken cancellationToken = default)
+        {
+            return await ExecuteAsync<SugarChatResponse>(_removeUserFromGroupUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
+        }
+
+        public async Task<SugarChatResponse> RemoveAllGroupMemberAsync(RemoveAllGroupMemberCommand command, CancellationToken cancellationToken = default)
+        {
+            return await ExecuteAsync<SugarChatResponse>(_removeAllGroupMemberUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
         }
     }
 }

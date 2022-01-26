@@ -138,5 +138,9 @@ namespace SugarChat.Net.Client
         Task<SugarChatResponse> UpdateMessageAsync(UpdateMessageCommand command, CancellationToken cancellationToken = default);
 
         Task<SugarChatResponse> UpdateGroupUserAsync(UpdateGroupUserCommand command, CancellationToken cancellationToken = default);
+
+        Task<SugarChatResponse> RemoveUserFromGroupAsync(RemoveUserFromGroupCommand command, CancellationToken cancellationToken = default);
+
+        Task<SugarChatResponse> RemoveAllGroupMemberAsync(RemoveAllGroupMemberCommand command, CancellationToken cancellationToken = default);
     }
 }
