@@ -14,6 +14,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="SugarChat.Message" Version="1.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="SugarChat.Message">
       <HintPath>SugarChat.Message.dll</HintPath>
     </Reference>
