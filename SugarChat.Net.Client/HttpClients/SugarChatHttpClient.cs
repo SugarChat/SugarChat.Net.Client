@@ -27,6 +27,9 @@ using SugarChat.Message.Dtos.Conversations;
 using SugarChat.Message.Dtos.GroupUsers;
 using SugarChat.Message.Paging;
 using System.Text;
+using SugarChat.Message.Commands.Emotions;
+using SugarChat.Message.Dtos.Emotions;
+using SugarChat.Message.Requests.Emotions;
 
 namespace SugarChat.Net.Client.HttpClients
 {
