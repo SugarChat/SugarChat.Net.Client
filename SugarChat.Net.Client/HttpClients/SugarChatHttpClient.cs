@@ -27,6 +27,9 @@ using SugarChat.Message.Dtos.Conversations;
 using SugarChat.Message.Dtos.GroupUsers;
 using SugarChat.Message.Paging;
 using System.Text;
+using SugarChat.Message.Commands.Emotions;
+using SugarChat.Message.Dtos.Emotions;
+using SugarChat.Message.Requests.Emotions;
 
 namespace SugarChat.Net.Client.HttpClients
 {
@@ -40,6 +43,10 @@ namespace SugarChat.Net.Client.HttpClients
         private const string _deleteConversationUrl = "api/conversation/deleteConversation";
         private const string _addFriendUrl = "api/friend/add";
         private const string _removeFriendUrl = "api/friend/remove";
+        private const string _addEmotionUrl = "api/emotion/add";
+        private const string _removeEmotionUrl = "api/emotion/remove";
+        private const string _getUserEmotionsUrl = "api/emotion/getUserEmotions";
+        private const string _getEmotionByIdsUrl = "api/emotion/getEmotionByIds";
         private const string _createGroupUrl = "api/group/create";
         private const string _dismissGroupUrl = "api/group/dismiss";
         private const string _getGroupListUrl = "api/group/getGroupList";
@@ -251,7 +258,28 @@ namespace SugarChat.Net.Client.HttpClients
         {
             return await ExecuteAsync<SugarChatResponse>(_removeFriendUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
         }
+        
+        public async Task<SugarChatResponse> AddEmotionAsync(AddEmotionCommand command, CancellationToken cancellationToken = default)
+        {
+            return await ExecuteAsync<SugarChatResponse>(_addEmotionUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
+        }
 
+        public async Task<SugarChatResponse> RemoveEmotionAsync(RemoveEmotionCommand command, CancellationToken cancellationToken = default)
+        {
+            return await ExecuteAsync<SugarChatResponse>(_removeEmotionUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
+        }
+
+        public async Task<SugarChatResponse<IEnumerable<EmotionDto>>> GetUserEmotionsAsync(GetUserEmotionsRequest request, CancellationToken cancellationToken = default)
+        {
+            var requestUrl = $"{_getUserEmotionsUrl}?userId={request.UserId}";
+            return await ExecuteAsync<SugarChatResponse<IEnumerable<EmotionDto>>>(requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
+        }
+        
+        public async Task<SugarChatResponse<IEnumerable<EmotionDto>>> GetEmotionByIdsAsync(GetEmotionByIdsRequest request, CancellationToken cancellationToken = default)
+        {
+            return await ExecuteAsync<SugarChatResponse<IEnumerable<EmotionDto>>>(_getEmotionByIdsUrl, HttpMethod.Post, JsonConvert.SerializeObject(request), cancellationToken).ConfigureAwait(false);
+        }
+        
         public async Task<SugarChatResponse> CreateGroupAsync(AddGroupCommand command, CancellationToken cancellationToken = default)
         {
             return await ExecuteAsync<SugarChatResponse>(_createGroupUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
