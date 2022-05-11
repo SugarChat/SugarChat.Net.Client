@@ -18,6 +18,11 @@ using SugarChat.Message.Responses.Conversations;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using SugarChat.Message.Commands.Emotions;
+using SugarChat.Message.Dtos.Configurations;
+using SugarChat.Message.Dtos.Emotions;
+using SugarChat.Message.Requests.Configurations;
+using SugarChat.Message.Requests.Emotions;
 
 namespace SugarChat.Net.Client
 {
@@ -47,6 +52,14 @@ namespace SugarChat.Net.Client
 
         Task<SugarChatResponse> RemoveFriendAsync(RemoveFriendCommand command, CancellationToken cancellationToken = default);
 
+        Task<SugarChatResponse> AddEmotionAsync(AddEmotionCommand command, CancellationToken cancellationToken = default);
+
+        Task<SugarChatResponse> RemoveEmotionAsync(RemoveEmotionCommand command, CancellationToken cancellationToken = default);
+
+        Task<SugarChatResponse<IEnumerable<EmotionDto>>> GetUserEmotionsAsync(GetUserEmotionsRequest request, CancellationToken cancellationToken = default);
+
+        Task<SugarChatResponse<IEnumerable<EmotionDto>>> GetEmotionByIdsAsync(GetEmotionByIdsRequest request, CancellationToken cancellationToken = default);
+        
         Task<SugarChatResponse> CreateGroupAsync(AddGroupCommand command, CancellationToken cancellationToken = default);
 
 
@@ -140,5 +153,8 @@ namespace SugarChat.Net.Client
         Task<SugarChatResponse> UpdateGroupUserDataAsync(UpdateGroupUserDataCommand command, CancellationToken cancellationToken = default);
 
         Task<SugarChatResponse> RemoveUserFromGroupAsync(RemoveUserFromGroupCommand command, CancellationToken cancellationToken = default);
+
+        Task<SugarChatResponse<ServerConfigurationsDto>> GetServerConfigurationsAsync(GetServerConfigurationsRequest request, CancellationToken cancellationToken = default);
+
     }
 }

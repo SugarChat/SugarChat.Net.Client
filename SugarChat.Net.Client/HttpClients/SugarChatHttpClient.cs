@@ -28,7 +28,9 @@ using SugarChat.Message.Dtos.GroupUsers;
 using SugarChat.Message.Paging;
 using System.Text;
 using SugarChat.Message.Commands.Emotions;
+using SugarChat.Message.Dtos.Configurations;
 using SugarChat.Message.Dtos.Emotions;
+using SugarChat.Message.Requests.Configurations;
 using SugarChat.Message.Requests.Emotions;
 
 namespace SugarChat.Net.Client.HttpClients
@@ -83,6 +85,7 @@ namespace SugarChat.Net.Client.HttpClients
         private const string _updateMessageUrl = "api/Message/updateMessageData";
         private const string _updateGroupUserUrl = "api/GroupUser/UpdateGroupUserData";
         private const string _removeUserFromGroupUrl = "api/GroupUser/RemoveUserFromGroup";
+        private const string _getServerConfigurationsUrl = "api/Configuration/GetConfigurations";
 
         private string _baseUrl = "";
         public SugarChatHttpClient(string baseUrl)
@@ -488,6 +491,12 @@ namespace SugarChat.Net.Client.HttpClients
         public async Task<SugarChatResponse> RemoveUserFromGroupAsync(RemoveUserFromGroupCommand command, CancellationToken cancellationToken = default)
         {
             return await ExecuteAsync<SugarChatResponse>(_removeUserFromGroupUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
+        }
+        
+        public async Task<SugarChatResponse<ServerConfigurationsDto>> GetServerConfigurationsAsync(GetServerConfigurationsRequest request, CancellationToken cancellationToken = default)
+        {
+            var requestUrl = $"{_getServerConfigurationsUrl}";
+            return await ExecuteAsync<SugarChatResponse<ServerConfigurationsDto>>(requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
     }
 }
