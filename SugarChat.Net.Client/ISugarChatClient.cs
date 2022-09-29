@@ -156,5 +156,6 @@ namespace SugarChat.Net.Client
 
         Task<SugarChatResponse<ServerConfigurationsDto>> GetServerConfigurationsAsync(GetServerConfigurationsRequest request, CancellationToken cancellationToken = default);
 
+        Task<SugarChatResponse<bool>> JudgeUserInGroupAsync(JudgeUserInGroupCommand command, CancellationToken cancellationToken = default);
     }
 }
