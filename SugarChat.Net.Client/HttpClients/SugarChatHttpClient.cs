@@ -82,7 +82,7 @@ namespace SugarChat.Net.Client.HttpClients
         private const string _getByCustomPropertiesUrl = "api/group/getByCustomProperties";
         private const string _updateGroupUserUrl = "api/GroupUser/UpdateGroupUserData";
         private const string _removeUserFromGroupUrl = "api/GroupUser/RemoveUserFromGroup";
-        private const string _judgeUserInGroupUrl = "api/GroupUser/JudgeUserInGroup";
+        private const string _checkUserIsInGroupUrl = "api/GroupUser/CheckUserIsInGroup";
         #endregion
 
         #region message
@@ -519,9 +519,9 @@ namespace SugarChat.Net.Client.HttpClients
             return await ExecuteAsync<SugarChatResponse<ServerConfigurationsDto>>(requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse<bool>> JudgeUserInGroupAsync(JudgeUserInGroupCommand command, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse<bool>> CheckUserIsInGroupAsync(CheckUserIsInGroupCommand command, CancellationToken cancellationToken = default)
         {
-            return await ExecuteAsync<SugarChatResponse<bool>>(_judgeUserInGroupUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse<bool>>(_checkUserIsInGroupUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
         }
     }
 }
