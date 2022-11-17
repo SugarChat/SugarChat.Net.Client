@@ -38,17 +38,31 @@ namespace SugarChat.Net.Client.HttpClients
     public partial class SugarChatHttpClient : ISugarChatClient
     {
         private const string _getConnectionUrl = "api/chat/getConnectionUrl";
+
+        #region conversation
         private const string _getMessageListUrl = "api/conversation/getMessageList";
         private const string _getConversationListUrl = "api/conversation/getConversationList";
         private const string _getConversationProfileUrl = "api/conversation/getConversationProfile";
         private const string _setMessageReadUrl = "api/conversation/setMessageRead";
         private const string _deleteConversationUrl = "api/conversation/deleteConversation";
+        private const string _setMessageReadSetByUserBasedOnGroupIdUrl = "api/conversation/setMessageReadSetByUserBasedOnGroupId";
+        private const string _getConversationByKeywordUrl = "api/conversation/getConversationByKeyword";
+        private const string _setMessageReadByUserIdsBasedOnGroupIdUrl = "api/conversation/setMessageReadByUserIdsBasedOnGroupId";
+        #endregion
+
+        #region friend
         private const string _addFriendUrl = "api/friend/add";
         private const string _removeFriendUrl = "api/friend/remove";
+        #endregion
+
+        #region emotion
         private const string _addEmotionUrl = "api/emotion/add";
         private const string _removeEmotionUrl = "api/emotion/remove";
         private const string _getUserEmotionsUrl = "api/emotion/getUserEmotions";
         private const string _getEmotionByIdsUrl = "api/emotion/getEmotionByIds";
+        #endregion
+
+        #region group
         private const string _createGroupUrl = "api/group/create";
         private const string _dismissGroupUrl = "api/group/dismiss";
         private const string _getGroupListUrl = "api/group/getGroupList";
@@ -64,6 +78,14 @@ namespace SugarChat.Net.Client.HttpClients
         private const string _deleteGroupMemberUrl = "api/groupUser/deleteGroupMember";
         private const string _setMessageRemindTypeUrl = "api/groupUser/setMessageRemindType";
         private const string _setGroupMemberRoleUrl = "api/groupUser/setGroupMemberRole";
+        private const string _getUserIdsByGroupIdsUrl = "api/groupUser/getUserIdsByGroupIds";
+        private const string _getByCustomPropertiesUrl = "api/group/getByCustomProperties";
+        private const string _updateGroupUserUrl = "api/GroupUser/UpdateGroupUserData";
+        private const string _removeUserFromGroupUrl = "api/GroupUser/RemoveUserFromGroup";
+        private const string _checkUserIsInGroupUrl = "api/GroupUser/CheckUserIsInGroup";
+        #endregion
+
+        #region message
         private const string _sendMessageUrl = "api/message/send";
         private const string _revokeMessageUrl = "api/message/revoke";
         private const string _getUnreadMessageCountUrl = "api/message/getUnreadMessageCount";
@@ -71,20 +93,18 @@ namespace SugarChat.Net.Client.HttpClients
         private const string _getAllToUserFromGroupUrl = "api/message/getAllToUserFromGroup";
         private const string _getMessagesOfGroupUrl = "api/message/getMessagesOfGroup";
         private const string _getMessagesOfGroupBeforeUrl = "api/message/getMessagesOfGroupBefore";
+        private const string _getMessagesByGroupIdsUrl = "api/message/getMessagesByGroupIds";
+        private const string _translateMessageUrl = "api/message/translate";
+        private const string _updateMessageUrl = "api/Message/updateMessageData";
+        #endregion
+
+        #region user
         private const string _createUserUrl = "api/user/create";
         private const string _getUserProfileUrl = "api/user/getUserProfile";
         private const string _updateMyProfileUrl = "api/user/updateMyProfile";
-        private const string _setMessageReadSetByUserBasedOnGroupIdUrl = "api/conversation/setMessageReadSetByUserBasedOnGroupId";
-        private const string _getUserIdsByGroupIdsUrl = "api/groupUser/getUserIdsByGroupIds";
-        private const string _getConversationByKeywordUrl = "api/conversation/getConversationByKeyword";
-        private const string _getByCustomPropertiesUrl = "api/group/getByCustomProperties";
-        private const string _getMessagesByGroupIdsUrl = "api/message/getMessagesByGroupIds";
         private const string _batchAddUsersUrl = "api/user/batchAddUsers";
-        private const string _translateMessageUrl = "api/message/translate";
-        private const string _setMessageReadByUserIdsBasedOnGroupIdUrl = "api/conversation/setMessageReadByUserIdsBasedOnGroupId";
-        private const string _updateMessageUrl = "api/Message/updateMessageData";
-        private const string _updateGroupUserUrl = "api/GroupUser/UpdateGroupUserData";
-        private const string _removeUserFromGroupUrl = "api/GroupUser/RemoveUserFromGroup";
+        #endregion
+
         private const string _getServerConfigurationsUrl = "api/Configuration/GetConfigurations";
 
         private string _baseUrl = "";
@@ -231,9 +251,9 @@ namespace SugarChat.Net.Client.HttpClients
             return await ExecuteAsync<SugarChatResponse<GetMessageListResponse>>(requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse<IEnumerable<ConversationDto>>> GetConversationListAsync(GetConversationListRequest request, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse<PagedResult<ConversationDto>>> GetConversationListAsync(GetConversationListRequest request, CancellationToken cancellationToken = default)
         {
-            return await ExecuteAsync<SugarChatResponse<IEnumerable<ConversationDto>>>(_getConversationListUrl, HttpMethod.Post, JsonConvert.SerializeObject(request), cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse<PagedResult<ConversationDto>>>(_getConversationListUrl, HttpMethod.Post, JsonConvert.SerializeObject(request), cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<SugarChatResponse<ConversationDto>> GetConversationProfileAsync(GetConversationProfileRequest request, CancellationToken cancellationToken = default)
@@ -497,6 +517,11 @@ namespace SugarChat.Net.Client.HttpClients
         {
             var requestUrl = $"{_getServerConfigurationsUrl}";
             return await ExecuteAsync<SugarChatResponse<ServerConfigurationsDto>>(requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
+        }
+
+        public async Task<SugarChatResponse<bool>> CheckUserIsInGroupAsync(CheckUserIsInGroupCommand command, CancellationToken cancellationToken = default)
+        {
+            return await ExecuteAsync<SugarChatResponse<bool>>(_checkUserIsInGroupUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
         }
     }
 }
