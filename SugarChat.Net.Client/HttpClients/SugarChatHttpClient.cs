@@ -42,6 +42,7 @@ namespace SugarChat.Net.Client.HttpClients
         #region conversation
         private const string _getMessageListUrl = "api/conversation/getMessageList";
         private const string _getConversationListUrl = "api/conversation/getConversationList";
+        private const string _getUnreadConversationListUrl = "api/conversation/getUnreadConversationList";
         private const string _getConversationProfileUrl = "api/conversation/getConversationProfile";
         private const string _setMessageReadUrl = "api/conversation/setMessageRead";
         private const string _deleteConversationUrl = "api/conversation/deleteConversation";
@@ -254,6 +255,11 @@ namespace SugarChat.Net.Client.HttpClients
         public async Task<SugarChatResponse<PagedResult<ConversationDto>>> GetConversationListAsync(GetConversationListRequest request, CancellationToken cancellationToken = default)
         {
             return await ExecuteAsync<SugarChatResponse<PagedResult<ConversationDto>>>(_getConversationListUrl, HttpMethod.Post, JsonConvert.SerializeObject(request), cancellationToken).ConfigureAwait(false);
+        }
+
+        public async Task<SugarChatResponse<PagedResult<ConversationDto>>> GetUnreadConversationListAsync(GetUnreadConversationListRequest request, CancellationToken cancellationToken = default)
+        {
+            return await ExecuteAsync<SugarChatResponse<PagedResult<ConversationDto>>>(_getUnreadConversationListUrl, HttpMethod.Post, JsonConvert.SerializeObject(request), cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<SugarChatResponse<ConversationDto>> GetConversationProfileAsync(GetConversationProfileRequest request, CancellationToken cancellationToken = default)
