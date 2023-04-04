@@ -183,10 +183,12 @@ namespace SugarChat.Net.Client.HttpClients
             CancellationToken cancellationToken = default)
         {
             if (client == null)
+            {
                 client = _httpClientFactory.CreateClient();
+                client.DefaultRequestHeaders.Add("x-correlation-id", !string.IsNullOrWhiteSpace(correlationId) ? correlationId : Guid.NewGuid().ToString());
+            }
 
             client.BaseAddress = new Uri(_baseUrl);
-            client.DefaultRequestHeaders.Add("x-correlation-id", !string.IsNullOrWhiteSpace(correlationId) ? correlationId : Guid.NewGuid().ToString());
 
             try
             {
