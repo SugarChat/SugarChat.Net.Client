@@ -32,9 +32,7 @@ namespace SugarChat.Net.Client
 
         Task<string> GetConnectionUrlAsync(string userIdentifier, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
-
         Task<SugarChatResponse<GetMessageListResponse>> GetMessageListAsync(GetMessageListRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
-
 
         Task<SugarChatResponse<PagedResult<ConversationDto>>> GetConversationListAsync(GetConversationListRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
@@ -42,15 +40,11 @@ namespace SugarChat.Net.Client
 
         Task<SugarChatResponse<ConversationDto>> GetConversationProfileAsync(GetConversationProfileRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
-
         Task<SugarChatResponse> SetMessageReadAsync(SetMessageReadByUserBasedOnMessageIdCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
-
 
         Task<SugarChatResponse> DeleteConversationAsync(RemoveConversationCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
-
         Task<SugarChatResponse> AddFriendAsync(AddFriendCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
-
 
         Task<SugarChatResponse> RemoveFriendAsync(RemoveFriendCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
@@ -64,26 +58,19 @@ namespace SugarChat.Net.Client
         
         Task<SugarChatResponse> CreateGroupAsync(AddGroupCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
-
         Task<SugarChatResponse> DismissGroupAsync(DismissGroupCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
         Task<SugarChatResponse<PagedResult<GroupDto>>> GetGroupListAsync(GetGroupsOfUserRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
-
         Task<SugarChatResponse<GroupDto>> GetGroupProfileAsync(GetGroupProfileRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
-
 
         Task<SugarChatResponse> UpdateGroupProfileAsync(UpdateGroupProfileCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
-
         Task<SugarChatResponse> RemoveGroupAsync(RemoveGroupCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
-
 
         Task<SugarChatResponse<IEnumerable<GroupUserDto>>> GetGroupMemberListAsync(GetMembersOfGroupRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
-
         Task<SugarChatResponse> SetGroupMemberCustomFieldAsync(SetGroupMemberCustomFieldCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
-
 
         Task<SugarChatResponse> JoinGroupAsync(JoinGroupCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
@@ -133,6 +120,8 @@ namespace SugarChat.Net.Client
 
 
         Task<SugarChatResponse> CreateUserAsync(AddUserCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
+
+        Task<SugarChatResponse> RemoveUserAsync(RemoveUserCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
         Task<SugarChatResponse> SetMessageReadSetByUserBasedOnGroupIdAsync(SetMessageReadByUserBasedOnGroupIdCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
