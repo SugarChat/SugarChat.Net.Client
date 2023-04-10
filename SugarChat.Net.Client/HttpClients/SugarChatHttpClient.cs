@@ -32,7 +32,6 @@ using SugarChat.Message.Dtos.Configurations;
 using SugarChat.Message.Dtos.Emotions;
 using SugarChat.Message.Requests.Configurations;
 using SugarChat.Message.Requests.Emotions;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace SugarChat.Net.Client.HttpClients
 {
