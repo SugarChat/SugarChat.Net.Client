@@ -111,11 +111,10 @@ namespace SugarChat.Net.Client.HttpClients
 
         private string _baseUrl = "";
         private IHttpClientFactory _httpClientFactory;
-        public SugarChatHttpClient(string baseUrl)
+        public SugarChatHttpClient(string baseUrl, IHttpClientFactory httpClientFactory)
         {
             _baseUrl = baseUrl;
-            var serviceProvider = new ServiceCollection().AddHttpClient().BuildServiceProvider();
-            _httpClientFactory = serviceProvider.GetService<IHttpClientFactory>();
+            _httpClientFactory = httpClientFactory;
         }
 
         protected struct ObjectResponseResult<T>
@@ -185,7 +184,8 @@ namespace SugarChat.Net.Client.HttpClients
             if (client == null)
             {
                 client = _httpClientFactory.CreateClient();
-                client.DefaultRequestHeaders.Add("x-correlation-id", !string.IsNullOrWhiteSpace(correlationId) ? correlationId : Guid.NewGuid().ToString());
+                if (!string.IsNullOrWhiteSpace(correlationId))
+                    client.DefaultRequestHeaders.Add("x-correlation-id", correlationId);
             }
 
             client.BaseAddress = new Uri(_baseUrl);
