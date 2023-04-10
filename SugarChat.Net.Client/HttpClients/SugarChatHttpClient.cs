@@ -108,9 +108,9 @@ namespace SugarChat.Net.Client.HttpClients
 
         private const string _getServerConfigurationsUrl = "api/Configuration/GetConfigurations";
 
-        private string _baseUrl = "";
-        private IHttpClientFactory _httpClientFactory;
-        public SugarChatHttpClient(string baseUrl, IHttpClientFactory httpClientFactory)
+        private readonly string _baseUrl;
+        private readonly ISugarChatHttpClientFactory _httpClientFactory;
+        public SugarChatHttpClient(string baseUrl, ISugarChatHttpClientFactory httpClientFactory)
         {
             _baseUrl = baseUrl;
             _httpClientFactory = httpClientFactory;
@@ -182,7 +182,7 @@ namespace SugarChat.Net.Client.HttpClients
         {
             if (client == null)
             {
-                client = _httpClientFactory.CreateClient();
+                client = _httpClientFactory.GetHttpClient();
                 if (!string.IsNullOrWhiteSpace(correlationId))
                     client.DefaultRequestHeaders.Add("x-correlation-id", correlationId);
             }
