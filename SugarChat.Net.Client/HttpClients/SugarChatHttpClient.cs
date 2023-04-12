@@ -108,10 +108,12 @@ namespace SugarChat.Net.Client.HttpClients
 
         private const string _getServerConfigurationsUrl = "api/Configuration/GetConfigurations";
 
-        private string _baseUrl = "";
-        public SugarChatHttpClient(string baseUrl)
+        private readonly string _baseUrl;
+        private readonly ISugarChatHttpClientFactory _httpClientFactory;
+        public SugarChatHttpClient(string baseUrl, ISugarChatHttpClientFactory httpClientFactory)
         {
             _baseUrl = baseUrl;
+            _httpClientFactory = httpClientFactory;
         }
 
         protected struct ObjectResponseResult<T>
@@ -171,9 +173,20 @@ namespace SugarChat.Net.Client.HttpClients
             }
         }
 
-        private async Task<T> ExecuteAsync<T>(string url, HttpMethod method, string requestString = "", CancellationToken cancellationToken = default)
+        private async Task<T> ExecuteAsync<T>(HttpClient client,
+            string correlationId,
+            string url,
+            HttpMethod method,
+            string requestString = "",
+            CancellationToken cancellationToken = default)
         {
-            var client = new HttpClient();
+            if (client == null)
+            {
+                client = _httpClientFactory.GetHttpClient();
+                if (!string.IsNullOrWhiteSpace(correlationId))
+                    client.DefaultRequestHeaders.Add("x-correlation-id", correlationId);
+            }
+
             client.BaseAddress = new Uri(_baseUrl);
 
             try
@@ -224,102 +237,102 @@ namespace SugarChat.Net.Client.HttpClients
             }
         }
 
-        public async Task<SugarChatResponse<UserDto>> GetUserProfileAsync(GetUserRequest request, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse<UserDto>> GetUserProfileAsync(GetUserRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
             var requestUrl = $"{_getUserProfileUrl}?id={request.Id}";
-            return await ExecuteAsync<SugarChatResponse<UserDto>>(requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse<UserDto>>(httpClient, correlationId, requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> UpdateMyProfileAsync(UpdateUserCommand command, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse> UpdateMyProfileAsync(UpdateUserCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
-            return await ExecuteAsync<SugarChatResponse>(_updateMyProfileUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _updateMyProfileUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> CreateUserAsync(AddUserCommand command, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse> CreateUserAsync(AddUserCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
-            return await ExecuteAsync<SugarChatResponse>(_createUserUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _createUserUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<string> GetConnectionUrlAsync(string userIdentifier, CancellationToken cancellationToken = default)
+        public async Task<string> GetConnectionUrlAsync(string userIdentifier, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
             var requestUrl = $"{_getConnectionUrl}?userIdentifier={userIdentifier}";
-            return await ExecuteAsync<string>(requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<string>(httpClient, correlationId, requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse<GetMessageListResponse>> GetMessageListAsync(GetMessageListRequest request, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse<GetMessageListResponse>> GetMessageListAsync(GetMessageListRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
             var requestUrl = $"{_getMessageListUrl}?userId={request.UserId}&conversationId={request.ConversationId}&nextReqMessageId={request.NextReqMessageId}&count={request.Count}&index={request.Index}";
-            return await ExecuteAsync<SugarChatResponse<GetMessageListResponse>>(requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse<GetMessageListResponse>>(httpClient, correlationId, requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse<PagedResult<ConversationDto>>> GetConversationListAsync(GetConversationListRequest request, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse<PagedResult<ConversationDto>>> GetConversationListAsync(GetConversationListRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
-            return await ExecuteAsync<SugarChatResponse<PagedResult<ConversationDto>>>(_getConversationListUrl, HttpMethod.Post, JsonConvert.SerializeObject(request), cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse<PagedResult<ConversationDto>>>(httpClient, correlationId, _getConversationListUrl, HttpMethod.Post, JsonConvert.SerializeObject(request), cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse<PagedResult<ConversationDto>>> GetUnreadConversationListAsync(GetUnreadConversationListRequest request, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse<PagedResult<ConversationDto>>> GetUnreadConversationListAsync(GetUnreadConversationListRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
-            return await ExecuteAsync<SugarChatResponse<PagedResult<ConversationDto>>>(_getUnreadConversationListUrl, HttpMethod.Post, JsonConvert.SerializeObject(request), cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse<PagedResult<ConversationDto>>>(httpClient, correlationId, _getUnreadConversationListUrl, HttpMethod.Post, JsonConvert.SerializeObject(request), cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse<ConversationDto>> GetConversationProfileAsync(GetConversationProfileRequest request, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse<ConversationDto>> GetConversationProfileAsync(GetConversationProfileRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
             var requestUrl = $"{_getConversationProfileUrl}?conversationId={request.ConversationId}&userId={request.UserId}";
-            return await ExecuteAsync<SugarChatResponse<ConversationDto>>(requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse<ConversationDto>>(httpClient, correlationId, requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> SetMessageReadAsync(SetMessageReadByUserBasedOnMessageIdCommand command, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse> SetMessageReadAsync(SetMessageReadByUserBasedOnMessageIdCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
-            return await ExecuteAsync<SugarChatResponse>(_setMessageReadUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _setMessageReadUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> DeleteConversationAsync(RemoveConversationCommand command, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse> DeleteConversationAsync(RemoveConversationCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
-            return await ExecuteAsync<SugarChatResponse>(_deleteConversationUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _deleteConversationUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> AddFriendAsync(AddFriendCommand command, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse> AddFriendAsync(AddFriendCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
-            return await ExecuteAsync<SugarChatResponse>(_addFriendUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _addFriendUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> RemoveFriendAsync(RemoveFriendCommand command, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse> RemoveFriendAsync(RemoveFriendCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
-            return await ExecuteAsync<SugarChatResponse>(_removeFriendUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
-        }
-        
-        public async Task<SugarChatResponse> AddEmotionAsync(AddEmotionCommand command, CancellationToken cancellationToken = default)
-        {
-            return await ExecuteAsync<SugarChatResponse>(_addEmotionUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _removeFriendUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> RemoveEmotionAsync(RemoveEmotionCommand command, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse> AddEmotionAsync(AddEmotionCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
-            return await ExecuteAsync<SugarChatResponse>(_removeEmotionUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _addEmotionUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse<IEnumerable<EmotionDto>>> GetUserEmotionsAsync(GetUserEmotionsRequest request, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse> RemoveEmotionAsync(RemoveEmotionCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
+        {
+            return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _removeEmotionUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
+        }
+
+        public async Task<SugarChatResponse<IEnumerable<EmotionDto>>> GetUserEmotionsAsync(GetUserEmotionsRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
             var requestUrl = $"{_getUserEmotionsUrl}?userId={request.UserId}";
-            return await ExecuteAsync<SugarChatResponse<IEnumerable<EmotionDto>>>(requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
-        
-        public async Task<SugarChatResponse<IEnumerable<EmotionDto>>> GetEmotionByIdsAsync(GetEmotionByIdsRequest request, CancellationToken cancellationToken = default)
-        {
-            return await ExecuteAsync<SugarChatResponse<IEnumerable<EmotionDto>>>(_getEmotionByIdsUrl, HttpMethod.Post, JsonConvert.SerializeObject(request), cancellationToken).ConfigureAwait(false);
-        }
-        
-        public async Task<SugarChatResponse> CreateGroupAsync(AddGroupCommand command, CancellationToken cancellationToken = default)
-        {
-            return await ExecuteAsync<SugarChatResponse>(_createGroupUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse<IEnumerable<EmotionDto>>>(httpClient, correlationId, requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> DismissGroupAsync(DismissGroupCommand command, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse<IEnumerable<EmotionDto>>> GetEmotionByIdsAsync(GetEmotionByIdsRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
-            return await ExecuteAsync<SugarChatResponse>(_dismissGroupUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse<IEnumerable<EmotionDto>>>(httpClient, correlationId, _getEmotionByIdsUrl, HttpMethod.Post, JsonConvert.SerializeObject(request), cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse<PagedResult<GroupDto>>> GetGroupListAsync(GetGroupsOfUserRequest request, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse> CreateGroupAsync(AddGroupCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
+        {
+            return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _createGroupUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
+        }
+
+        public async Task<SugarChatResponse> DismissGroupAsync(DismissGroupCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
+        {
+            return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _dismissGroupUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
+        }
+
+        public async Task<SugarChatResponse<PagedResult<GroupDto>>> GetGroupListAsync(GetGroupsOfUserRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
             string requestUrl;
             if (request.PageSettings is null)
@@ -330,99 +343,99 @@ namespace SugarChat.Net.Client.HttpClients
             {
                 requestUrl = $"{_getGroupListUrl}?userId={request.UserId}&pageSettings.pageSize={request.PageSettings.PageSize}&pageSettings.pageNum={request.PageSettings.PageNum}";
             }
-            return await ExecuteAsync<SugarChatResponse<PagedResult<GroupDto>>>(requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse<PagedResult<GroupDto>>>(httpClient, correlationId, requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse<GroupDto>> GetGroupProfileAsync(GetGroupProfileRequest request, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse<GroupDto>> GetGroupProfileAsync(GetGroupProfileRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
             var requestUrl = $"{_getGroupProfileUrl}?userId={request.UserId}&groupId={request.GroupId}";
-            return await ExecuteAsync<SugarChatResponse<GroupDto>>(requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse<GroupDto>>(httpClient, correlationId, requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> UpdateGroupProfileAsync(UpdateGroupProfileCommand command, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse> UpdateGroupProfileAsync(UpdateGroupProfileCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
-            return await ExecuteAsync<SugarChatResponse>(_updateGroupProfileUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _updateGroupProfileUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> RemoveGroupAsync(RemoveGroupCommand command, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse> RemoveGroupAsync(RemoveGroupCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
-            return await ExecuteAsync<SugarChatResponse>(_removeGroupUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _removeGroupUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse<IEnumerable<GroupUserDto>>> GetGroupMemberListAsync(GetMembersOfGroupRequest request, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse<IEnumerable<GroupUserDto>>> GetGroupMemberListAsync(GetMembersOfGroupRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
             var requestUrl = $"{_getGroupMemberListUrl}?userId={request.UserId}&groupId={request.GroupId}";
-            return await ExecuteAsync<SugarChatResponse<IEnumerable<GroupUserDto>>>(requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse<IEnumerable<GroupUserDto>>>(httpClient, correlationId, requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> SetGroupMemberCustomFieldAsync(SetGroupMemberCustomFieldCommand command, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse> SetGroupMemberCustomFieldAsync(SetGroupMemberCustomFieldCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
-            return await ExecuteAsync<SugarChatResponse>(_setGroupMemberCustomFieldUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _setGroupMemberCustomFieldUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> JoinGroupAsync(JoinGroupCommand command, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse> JoinGroupAsync(JoinGroupCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
-            return await ExecuteAsync<SugarChatResponse>(_joinGroupUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _joinGroupUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> QuitGroupAsync(QuitGroupCommand command, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse> QuitGroupAsync(QuitGroupCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
-            return await ExecuteAsync<SugarChatResponse>(_quitGroupUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _quitGroupUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> ChangeGroupOwnerAsync(ChangeGroupOwnerCommand command, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse> ChangeGroupOwnerAsync(ChangeGroupOwnerCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
-            return await ExecuteAsync<SugarChatResponse>(_changeGroupOwnerUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _changeGroupOwnerUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> AddGroupMemberAsync(AddGroupMemberCommand command, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse> AddGroupMemberAsync(AddGroupMemberCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
-            return await ExecuteAsync<SugarChatResponse>(_addGroupMemberUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _addGroupMemberUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> DeleteGroupMemberAsync(RemoveGroupMemberCommand command, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse> DeleteGroupMemberAsync(RemoveGroupMemberCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
-            return await ExecuteAsync<SugarChatResponse>(_deleteGroupMemberUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _deleteGroupMemberUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> SetMessageRemindTypeAsync(SetMessageRemindTypeCommand command, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse> SetMessageRemindTypeAsync(SetMessageRemindTypeCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
-            return await ExecuteAsync<SugarChatResponse>(_setMessageRemindTypeUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _setMessageRemindTypeUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> SetGroupMemberRoleAsync(SetGroupMemberRoleCommand command, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse> SetGroupMemberRoleAsync(SetGroupMemberRoleCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
-            return await ExecuteAsync<SugarChatResponse>(_setGroupMemberRoleUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _setGroupMemberRoleUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> SendMessageAsync(SendMessageCommand command, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse> SendMessageAsync(SendMessageCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
-            return await ExecuteAsync<SugarChatResponse>(_sendMessageUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _sendMessageUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> RevokeMessageAsync(RevokeMessageCommand command, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse> RevokeMessageAsync(RevokeMessageCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
-            return await ExecuteAsync<SugarChatResponse>(_revokeMessageUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _revokeMessageUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse<int>> GetUnreadMessageCountAsync(GetUnreadMessageCountRequest request, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse<int>> GetUnreadMessageCountAsync(GetUnreadMessageCountRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
-            return await ExecuteAsync<SugarChatResponse<int>>(_getUnreadMessageCountUrl, HttpMethod.Post, JsonConvert.SerializeObject(request), cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse<int>>(httpClient, correlationId, _getUnreadMessageCountUrl, HttpMethod.Post, JsonConvert.SerializeObject(request), cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse<IEnumerable<MessageDto>>> GetUnreadMessagesFromGroupAsync(GetUnreadMessagesFromGroupRequest request, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse<IEnumerable<MessageDto>>> GetUnreadMessagesFromGroupAsync(GetUnreadMessagesFromGroupRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
             var requestUrl = $"{_getUnreadMessagesFromGroupUrl}?userId={request.UserId}&groupId={request.GroupId}&messageId={request.MessageId}&count={request.Count}";
-            return await ExecuteAsync<SugarChatResponse<IEnumerable<MessageDto>>>(requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse<IEnumerable<MessageDto>>>(httpClient, correlationId, requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse<IEnumerable<MessageDto>>> GetAllToUserFromGroupAsync(GetAllMessagesFromGroupRequest request, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse<IEnumerable<MessageDto>>> GetAllToUserFromGroupAsync(GetAllMessagesFromGroupRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
             var requestUrl = $"{_getAllToUserFromGroupUrl}?userId={request.UserId}&groupId={request.GroupId}&index={request.Index}&messageId={request.MessageId}&count={request.Count}";
-            return await ExecuteAsync<SugarChatResponse<IEnumerable<MessageDto>>>(requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse<IEnumerable<MessageDto>>>(httpClient, correlationId, requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse<PagedResult<MessageDto>>> GetMessagesOfGroupAsync(GetMessagesOfGroupRequest request, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse<PagedResult<MessageDto>>> GetMessagesOfGroupAsync(GetMessagesOfGroupRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
             string requestUrl = $"{_getMessagesOfGroupUrl}?groupId={request.GroupId}";
             if (request.FromDate != null)
@@ -433,45 +446,45 @@ namespace SugarChat.Net.Client.HttpClients
             {
                 requestUrl += $"&pageSettings.pageSize={request.PageSettings.PageSize}&pageSettings.pageNum={request.PageSettings.PageNum}";
             }
-            return await ExecuteAsync<SugarChatResponse<PagedResult<MessageDto>>>(requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse<PagedResult<MessageDto>>>(httpClient, correlationId, requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse<IEnumerable<MessageDto>>> GetMessagesOfGroupBeforeAsync(GetMessagesOfGroupBeforeRequest request, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse<IEnumerable<MessageDto>>> GetMessagesOfGroupBeforeAsync(GetMessagesOfGroupBeforeRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
             var requestUrl = $"{_getMessagesOfGroupBeforeUrl}?messageId={request.MessageId}&count={request.Count}";
-            return await ExecuteAsync<SugarChatResponse<IEnumerable<MessageDto>>>(requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse<IEnumerable<MessageDto>>>(httpClient, correlationId, requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> SetMessageReadSetByUserBasedOnGroupIdAsync(SetMessageReadByUserBasedOnGroupIdCommand command, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse> SetMessageReadSetByUserBasedOnGroupIdAsync(SetMessageReadByUserBasedOnGroupIdCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
-            return await ExecuteAsync<SugarChatResponse>(_setMessageReadSetByUserBasedOnGroupIdUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _setMessageReadSetByUserBasedOnGroupIdUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse<IEnumerable<string>>> GetUserIdsByGroupIdsAsync(GetUserIdsByGroupIdsRequest request, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse<IEnumerable<string>>> GetUserIdsByGroupIdsAsync(GetUserIdsByGroupIdsRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
-            return await ExecuteAsync<SugarChatResponse<IEnumerable<string>>>(_getUserIdsByGroupIdsUrl, HttpMethod.Post, JsonConvert.SerializeObject(request), cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse<IEnumerable<string>>>(httpClient, correlationId, _getUserIdsByGroupIdsUrl, HttpMethod.Post, JsonConvert.SerializeObject(request), cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse<PagedResult<ConversationDto>>> GetConversationByKeywordAsync(GetConversationByKeywordRequest request, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse<PagedResult<ConversationDto>>> GetConversationByKeywordAsync(GetConversationByKeywordRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
-            return await ExecuteAsync<SugarChatResponse<PagedResult<ConversationDto>>>(_getConversationByKeywordUrl, HttpMethod.Post, JsonConvert.SerializeObject(request), cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse<PagedResult<ConversationDto>>>(httpClient, correlationId, _getConversationByKeywordUrl, HttpMethod.Post, JsonConvert.SerializeObject(request), cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse<IEnumerable<GroupDto>>> GetGroupByCustomPropertiesAsync(GetGroupByCustomPropertiesRequest request, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse<IEnumerable<GroupDto>>> GetGroupByCustomPropertiesAsync(GetGroupByCustomPropertiesRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
             var query = DictionariesToQuery("CustomProperties", request.CustomProperties);
             var requestUrl = $"{_getByCustomPropertiesUrl}?userId={request.UserId}&SearchAllGroup={request.SearchAllGroup}{query}";
-            return await ExecuteAsync<SugarChatResponse<IEnumerable<GroupDto>>>(requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse<IEnumerable<GroupDto>>>(httpClient, correlationId, requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse<IEnumerable<MessageDto>>> GetMessagesByGroupIdsAsync(GetMessagesByGroupIdsRequest request, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse<IEnumerable<MessageDto>>> GetMessagesByGroupIdsAsync(GetMessagesByGroupIdsRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
-            return await ExecuteAsync<SugarChatResponse<IEnumerable<MessageDto>>>(_getMessagesByGroupIdsUrl, HttpMethod.Post, JsonConvert.SerializeObject(request), cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse<IEnumerable<MessageDto>>>(httpClient, correlationId, _getMessagesByGroupIdsUrl, HttpMethod.Post, JsonConvert.SerializeObject(request), cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> BatchAddUsers(BatchAddUsersCommand command, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse> BatchAddUsers(BatchAddUsersCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
-            return await ExecuteAsync<SugarChatResponse>(_batchAddUsersUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _batchAddUsersUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
         }
 
         private string DictionariesToQuery(string fieldName, IDictionary<string, string> dictionaries)
@@ -494,40 +507,40 @@ namespace SugarChat.Net.Client.HttpClients
             return query.ToString();
         }
 
-        public async Task<SugarChatResponse<MessageTranslateDto>> TranslateMessageAsync(TranslateMessageCommand command, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse<MessageTranslateDto>> TranslateMessageAsync(TranslateMessageCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
-            return await ExecuteAsync<SugarChatResponse<MessageTranslateDto>>(_translateMessageUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse<MessageTranslateDto>>(httpClient, correlationId, _translateMessageUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> SetMessageReadByUserIdsBasedOnGroupIdAsync(SetMessageReadByUserIdsBasedOnGroupIdCommand command, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse> SetMessageReadByUserIdsBasedOnGroupIdAsync(SetMessageReadByUserIdsBasedOnGroupIdCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
-            return await ExecuteAsync<SugarChatResponse>(_setMessageReadByUserIdsBasedOnGroupIdUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _setMessageReadByUserIdsBasedOnGroupIdUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> UpdateMessageDataAsync(UpdateMessageDataCommand command, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse> UpdateMessageDataAsync(UpdateMessageDataCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
-            return await ExecuteAsync<SugarChatResponse>(_updateMessageUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _updateMessageUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> UpdateGroupUserDataAsync(UpdateGroupUserDataCommand command, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse> UpdateGroupUserDataAsync(UpdateGroupUserDataCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
-            return await ExecuteAsync<SugarChatResponse>(_updateGroupUserUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _updateGroupUserUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> RemoveUserFromGroupAsync(RemoveUserFromGroupCommand command, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse> RemoveUserFromGroupAsync(RemoveUserFromGroupCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
-            return await ExecuteAsync<SugarChatResponse>(_removeUserFromGroupUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _removeUserFromGroupUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
         }
-        
-        public async Task<SugarChatResponse<ServerConfigurationsDto>> GetServerConfigurationsAsync(GetServerConfigurationsRequest request, CancellationToken cancellationToken = default)
+
+        public async Task<SugarChatResponse<ServerConfigurationsDto>> GetServerConfigurationsAsync(GetServerConfigurationsRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
             var requestUrl = $"{_getServerConfigurationsUrl}";
-            return await ExecuteAsync<SugarChatResponse<ServerConfigurationsDto>>(requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse<ServerConfigurationsDto>>(httpClient, correlationId, requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse<bool>> CheckUserIsInGroupAsync(CheckUserIsInGroupCommand command, CancellationToken cancellationToken = default)
+        public async Task<SugarChatResponse<bool>> CheckUserIsInGroupAsync(CheckUserIsInGroupCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
-            return await ExecuteAsync<SugarChatResponse<bool>>(_checkUserIsInGroupUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse<bool>>(httpClient, correlationId, _checkUserIsInGroupUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
         }
     }
 }
