@@ -107,6 +107,8 @@ namespace SugarChat.Net.Client
 
         Task<SugarChatResponse> RemoveUserAsync(RemoveUserCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
+        Task<SugarChatResponse> RemoveAllUserAsync(RemoveAllUserCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
+
         Task<SugarChatResponse> SetMessageReadSetByUserBasedOnGroupIdAsync(SetMessageReadByUserBasedOnGroupIdCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
         Task<SugarChatResponse<IEnumerable<string>>> GetUserIdsByGroupIdsAsync(GetUserIdsByGroupIdsRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);

@@ -20,6 +20,7 @@ namespace SugarChat.Net.Client.HttpClients
         private const string _createUserUrl = "api/user/create";
         private const string _removeUserUrl = "api/user/remove";
         private const string _batchAddUsersUrl = "api/user/batchAddUsers";
+        private const string _removeAllUserUrl = "api/user/removeAll";
 
         public async Task<SugarChatResponse<UserDto>> GetUserProfileAsync(GetUserRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
@@ -40,6 +41,11 @@ namespace SugarChat.Net.Client.HttpClients
         public async Task<SugarChatResponse> RemoveUserAsync(RemoveUserCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
             return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _removeUserUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
+        }
+
+        public async Task<SugarChatResponse> RemoveAllUserAsync(RemoveAllUserCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
+        {
+            return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _removeAllUserUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<SugarChatResponse> BatchAddUsers(BatchAddUsersCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
