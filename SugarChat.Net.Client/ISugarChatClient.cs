@@ -29,12 +29,9 @@ namespace SugarChat.Net.Client
 {
     public interface ISugarChatClient
     {
-
         Task<string> GetConnectionUrlAsync(string userIdentifier, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
-
         Task<SugarChatResponse<GetMessageListResponse>> GetMessageListAsync(GetMessageListRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
-
 
         Task<SugarChatResponse<PagedResult<ConversationDto>>> GetConversationListAsync(GetConversationListRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
@@ -42,15 +39,11 @@ namespace SugarChat.Net.Client
 
         Task<SugarChatResponse<ConversationDto>> GetConversationProfileAsync(GetConversationProfileRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
-
         Task<SugarChatResponse> SetMessageReadAsync(SetMessageReadByUserBasedOnMessageIdCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
-
 
         Task<SugarChatResponse> DeleteConversationAsync(RemoveConversationCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
-
         Task<SugarChatResponse> AddFriendAsync(AddFriendCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
-
 
         Task<SugarChatResponse> RemoveFriendAsync(RemoveFriendCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
@@ -64,75 +57,57 @@ namespace SugarChat.Net.Client
         
         Task<SugarChatResponse> CreateGroupAsync(AddGroupCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
-
         Task<SugarChatResponse> DismissGroupAsync(DismissGroupCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
         Task<SugarChatResponse<PagedResult<GroupDto>>> GetGroupListAsync(GetGroupsOfUserRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
-
         Task<SugarChatResponse<GroupDto>> GetGroupProfileAsync(GetGroupProfileRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
-
 
         Task<SugarChatResponse> UpdateGroupProfileAsync(UpdateGroupProfileCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
-
         Task<SugarChatResponse> RemoveGroupAsync(RemoveGroupCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
-
 
         Task<SugarChatResponse<IEnumerable<GroupUserDto>>> GetGroupMemberListAsync(GetMembersOfGroupRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
-
         Task<SugarChatResponse> SetGroupMemberCustomFieldAsync(SetGroupMemberCustomFieldCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
-
 
         Task<SugarChatResponse> JoinGroupAsync(JoinGroupCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
-
         Task<SugarChatResponse> QuitGroupAsync(QuitGroupCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
-
 
         Task<SugarChatResponse> ChangeGroupOwnerAsync(ChangeGroupOwnerCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
-
         Task<SugarChatResponse> AddGroupMemberAsync(AddGroupMemberCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
-
 
         Task<SugarChatResponse> DeleteGroupMemberAsync(RemoveGroupMemberCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
-
         Task<SugarChatResponse> SetMessageRemindTypeAsync(SetMessageRemindTypeCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
-
 
         Task<SugarChatResponse> SetGroupMemberRoleAsync(SetGroupMemberRoleCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
         Task<SugarChatResponse> SendMessageAsync(SendMessageCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
-
         Task<SugarChatResponse> RevokeMessageAsync(RevokeMessageCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
-
 
         Task<SugarChatResponse<int>> GetUnreadMessageCountAsync(GetUnreadMessageCountRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
-
         Task<SugarChatResponse<IEnumerable<MessageDto>>> GetUnreadMessagesFromGroupAsync(GetUnreadMessagesFromGroupRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
-
 
         Task<SugarChatResponse<IEnumerable<MessageDto>>> GetAllToUserFromGroupAsync(GetAllMessagesFromGroupRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
-
         Task<SugarChatResponse<PagedResult<MessageDto>>> GetMessagesOfGroupAsync(GetMessagesOfGroupRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
-
 
         Task<SugarChatResponse<IEnumerable<MessageDto>>> GetMessagesOfGroupBeforeAsync(GetMessagesOfGroupBeforeRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
-
         Task<SugarChatResponse<UserDto>> GetUserProfileAsync(GetUserRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
-
 
         Task<SugarChatResponse> UpdateMyProfileAsync(UpdateUserCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
-
         Task<SugarChatResponse> CreateUserAsync(AddUserCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
+
+        Task<SugarChatResponse> RemoveUserAsync(RemoveUserCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
+
+        Task<SugarChatResponse> RemoveAllUserAsync(RemoveAllUserCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
         Task<SugarChatResponse> SetMessageReadSetByUserBasedOnGroupIdAsync(SetMessageReadByUserBasedOnGroupIdCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 

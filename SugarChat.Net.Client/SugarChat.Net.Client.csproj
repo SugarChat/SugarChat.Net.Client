@@ -5,12 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
-	<PackageReference Include="SugarChat.Message" Version="1.6.0" />
+	<PackageReference Include="SugarChat.Message" Version="1.7.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-	<PackageReference Include="SugarChat.Message" Version="1.5.0" />
+	<PackageReference Include="SugarChat.Message" Version="1.7.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
