@@ -26,6 +26,7 @@ namespace SugarChat.Net.Client.HttpClients
         private const string _setMessageReadSetByUserBasedOnGroupIdUrl = "api/conversation/setMessageReadSetByUserBasedOnGroupId";
         private const string _getConversationByKeywordUrl = "api/conversation/getConversationByKeyword";
         private const string _setMessageReadByUserIdsBasedOnGroupIdUrl = "api/conversation/setMessageReadByUserIdsBasedOnGroupId";
+        private const string _setMessageUnreadByUserIdsBasedOnGroupIdUrl = "api/conversation/setMessageUnreadByUserIdsBasedOnGroupId";
 
         public async Task<SugarChatResponse<PagedResult<ConversationDto>>> GetConversationListAsync(GetConversationListRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
@@ -61,6 +62,11 @@ namespace SugarChat.Net.Client.HttpClients
         public async Task<SugarChatResponse> SetMessageReadByUserIdsBasedOnGroupIdAsync(SetMessageReadByUserIdsBasedOnGroupIdCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
             return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _setMessageReadByUserIdsBasedOnGroupIdUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
+        }
+
+        public async Task<SugarChatResponse> SetMessageUnreadByUserIdsBasedOnGroupIdAsync(SetMessageUnreadByUserIdsBasedOnGroupIdCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
+        {
+            return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _setMessageUnreadByUserIdsBasedOnGroupIdUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
         }
     }
 }
