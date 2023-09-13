@@ -57,6 +57,8 @@ namespace SugarChat.Net.Client
         
         Task<SugarChatResponse> CreateGroupAsync(AddGroupCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
+        Task<SugarChatResponse> BatchCreateGroupAsync(BatchAddGroupCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
+
         Task<SugarChatResponse> DismissGroupAsync(DismissGroupCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
         Task<SugarChatResponse<PagedResult<GroupDto>>> GetGroupListAsync(GetGroupsOfUserRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
@@ -79,6 +81,8 @@ namespace SugarChat.Net.Client
 
         Task<SugarChatResponse> AddGroupMemberAsync(AddGroupMemberCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
+        Task<SugarChatResponse> BatchAddGroupMemberAsync(BatchAddGroupMemberCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
+
         Task<SugarChatResponse> DeleteGroupMemberAsync(RemoveGroupMemberCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
         Task<SugarChatResponse> SetMessageRemindTypeAsync(SetMessageRemindTypeCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
@@ -86,6 +90,8 @@ namespace SugarChat.Net.Client
         Task<SugarChatResponse> SetGroupMemberRoleAsync(SetGroupMemberRoleCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
         Task<SugarChatResponse> SendMessageAsync(SendMessageCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
+
+        Task<SugarChatResponse> BatchSendMessageAsync(BatchSendMessageCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 
         Task<SugarChatResponse> RevokeMessageAsync(RevokeMessageCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null);
 

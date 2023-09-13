@@ -20,6 +20,7 @@ namespace SugarChat.Net.Client.HttpClients
     public partial class SugarChatHttpClient
     {
         private const string _createGroupUrl = "api/group/create";
+        private const string _batchCreateGroupUrl = "api/group/batchCreate";
         private const string _dismissGroupUrl = "api/group/dismiss";
         private const string _getGroupListUrl = "api/group/getGroupList";
         private const string _getGroupProfileUrl = "api/group/getGroupProfile";
@@ -31,6 +32,7 @@ namespace SugarChat.Net.Client.HttpClients
         private const string _quitGroupUrl = "api/groupUser/quit";
         private const string _changeGroupOwnerUrl = "api/groupUser/changeGroupOwner";
         private const string _addGroupMemberUrl = "api/groupUser/addGroupMember";
+        private const string _batchAddGroupMemberUrl = "api/groupUser/batchAddGroupMember";
         private const string _deleteGroupMemberUrl = "api/groupUser/deleteGroupMember";
         private const string _setMessageRemindTypeUrl = "api/groupUser/setMessageRemindType";
         private const string _setGroupMemberRoleUrl = "api/groupUser/setGroupMemberRole";
@@ -43,6 +45,11 @@ namespace SugarChat.Net.Client.HttpClients
         public async Task<SugarChatResponse> CreateGroupAsync(AddGroupCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
             return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _createGroupUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
+        }
+
+        public async Task<SugarChatResponse> BatchCreateGroupAsync(BatchAddGroupCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
+        {
+            return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _batchCreateGroupUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
         }
 
         public async Task<SugarChatResponse> DismissGroupAsync(DismissGroupCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
@@ -109,6 +116,11 @@ namespace SugarChat.Net.Client.HttpClients
         public async Task<SugarChatResponse> AddGroupMemberAsync(AddGroupMemberCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
             return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _addGroupMemberUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
+        }
+
+        public async Task<SugarChatResponse> BatchAddGroupMemberAsync(BatchAddGroupMemberCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
+        {
+            return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _batchAddGroupMemberUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
         }
 
         public async Task<SugarChatResponse> DeleteGroupMemberAsync(RemoveGroupMemberCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)

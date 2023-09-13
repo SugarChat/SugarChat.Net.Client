@@ -20,6 +20,7 @@ namespace SugarChat.Net.Client.HttpClients
     public partial class SugarChatHttpClient
     {
         private const string _sendMessageUrl = "api/message/send";
+        private const string _batchSendMessageUrl = "api/message/batchSend";
         private const string _revokeMessageUrl = "api/message/revoke";
         private const string _getUnreadMessageCountUrl = "api/message/getUnreadMessageCount";
         private const string _getUnreadMessagesFromGroupUrl = "api/message/getUnreadMessagesFromGroup";
@@ -39,6 +40,11 @@ namespace SugarChat.Net.Client.HttpClients
         public async Task<SugarChatResponse> SendMessageAsync(SendMessageCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
             return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _sendMessageUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
+        }
+
+        public async Task<SugarChatResponse> BatchSendMessageAsync(BatchSendMessageCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
+        {
+            return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _batchSendMessageUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
         }
 
         public async Task<SugarChatResponse> RevokeMessageAsync(RevokeMessageCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
