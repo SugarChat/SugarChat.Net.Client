@@ -28,6 +28,7 @@ namespace SugarChat.Net.Client.HttpClients
         private const string _removeGroupUrl = "api/group/remove";
         private const string _getGroupMemberListUrl = "api/groupUser/getGroupMemberList";
         private const string _setGroupMemberCustomFieldUrl = "api/groupUser/setGroupMemberCustomField";
+        private const string _batchSetGroupMemberCustomFieldUrl = "api/groupUser/batchSetGroupMemberCustomField";
         private const string _joinGroupUrl = "api/groupUser/join";
         private const string _quitGroupUrl = "api/groupUser/quit";
         private const string _changeGroupOwnerUrl = "api/groupUser/changeGroupOwner";
@@ -96,6 +97,11 @@ namespace SugarChat.Net.Client.HttpClients
         public async Task<SugarChatResponse> SetGroupMemberCustomFieldAsync(SetGroupMemberCustomFieldCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
         {
             return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _setGroupMemberCustomFieldUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
+        }
+
+        public async Task<SugarChatResponse> BatchSetGroupMemberCustomFieldAsync(BatchSetGroupMemberCustomFieldCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
+        {
+            return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _batchSetGroupMemberCustomFieldUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
         }
 
         public async Task<SugarChatResponse> JoinGroupAsync(JoinGroupCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
