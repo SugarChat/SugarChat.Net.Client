@@ -236,11 +236,6 @@ namespace SugarChat.Net.Client.HttpClients
             return await ExecuteAsync<SugarChatResponse<IEnumerable<GroupDto>>>(httpClient, correlationId, requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse<IEnumerable<MessageDto>>> GetMessagesByGroupIdsAsync(GetMessagesByGroupIdsRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
-        {
-            return await ExecuteAsync<SugarChatResponse<IEnumerable<MessageDto>>>(httpClient, correlationId, _getMessagesByGroupIdsUrl, HttpMethod.Post, JsonConvert.SerializeObject(request), cancellationToken).ConfigureAwait(false);
-        }
-
         private string DictionariesToQuery(string fieldName, IDictionary<string, string> dictionaries)
         {
             StringBuilder query = new StringBuilder();

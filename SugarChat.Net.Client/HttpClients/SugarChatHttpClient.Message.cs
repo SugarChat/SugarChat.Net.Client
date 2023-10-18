@@ -92,5 +92,10 @@ namespace SugarChat.Net.Client.HttpClients
         {
             return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _updateMessageUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
         }
+
+        public async Task<SugarChatResponse<PagedResult<MessageDto>>> GetMessagesByGroupIdsAsync(GetMessagesByGroupIdsRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
+        {
+            return await ExecuteAsync<SugarChatResponse<PagedResult<MessageDto>>>(httpClient, correlationId, _getMessagesByGroupIdsUrl, HttpMethod.Post, JsonConvert.SerializeObject(request), cancellationToken).ConfigureAwait(false);
+        }
     }
 }
