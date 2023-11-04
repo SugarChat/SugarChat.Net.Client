@@ -124,7 +124,7 @@ namespace SugarChat.Net.Client.HttpClients
             CancellationToken cancellationToken = default)
         {
             var client = _httpClientFactory.GetHttpClient();
-            if (_headers == null)
+            if (_headers != null)
             {
                 foreach (var header in _headers)
                 {
