@@ -6,7 +6,6 @@ using SugarChat.Message.Dtos.Conversations;
 using SugarChat.Message.Paging;
 using SugarChat.Message.Requests.Conversations;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,45 +24,45 @@ namespace SugarChat.Net.Client.HttpClients
         private const string _setMessageReadByUserIdsBasedOnGroupIdUrl = "api/conversation/setMessageReadByUserIdsBasedOnGroupId";
         private const string _setMessageUnreadByUserIdsBasedOnGroupIdUrl = "api/conversation/setMessageUnreadByUserIdsBasedOnGroupId";
 
-        public async Task<SugarChatResponse<PagedResult<ConversationDto>>> GetConversationListAsync(GetConversationListRequest request, CancellationToken cancellationToken = default, HttpRequestHeaders requestHeaders = null)
+        public async Task<SugarChatResponse<PagedResult<ConversationDto>>> GetConversationListAsync(GetConversationListRequest request, CancellationToken cancellationToken = default)
         {
-            return await ExecuteAsync<SugarChatResponse<PagedResult<ConversationDto>>>(requestHeaders, _getConversationListUrl, HttpMethod.Post, JsonConvert.SerializeObject(request), cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse<PagedResult<ConversationDto>>>(_getConversationListUrl, HttpMethod.Post, JsonConvert.SerializeObject(request), cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse<PagedResult<ConversationDto>>> GetUnreadConversationListAsync(GetUnreadConversationListRequest request, CancellationToken cancellationToken = default, HttpRequestHeaders requestHeaders = null)
+        public async Task<SugarChatResponse<PagedResult<ConversationDto>>> GetUnreadConversationListAsync(GetUnreadConversationListRequest request, CancellationToken cancellationToken = default)
         {
-            return await ExecuteAsync<SugarChatResponse<PagedResult<ConversationDto>>>(requestHeaders, _getUnreadConversationListUrl, HttpMethod.Post, JsonConvert.SerializeObject(request), cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse<PagedResult<ConversationDto>>>(_getUnreadConversationListUrl, HttpMethod.Post, JsonConvert.SerializeObject(request), cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse<ConversationDto>> GetConversationProfileAsync(GetConversationProfileRequest request, CancellationToken cancellationToken = default, HttpRequestHeaders requestHeaders = null)
+        public async Task<SugarChatResponse<ConversationDto>> GetConversationProfileAsync(GetConversationProfileRequest request, CancellationToken cancellationToken = default)
         {
             var requestUrl = $"{_getConversationProfileUrl}?conversationId={request.ConversationId}&userId={request.UserId}";
-            return await ExecuteAsync<SugarChatResponse<ConversationDto>>(requestHeaders, requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse<ConversationDto>>(requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> SetMessageReadAsync(SetMessageReadByUserBasedOnMessageIdCommand command, CancellationToken cancellationToken = default, HttpRequestHeaders requestHeaders = null)
+        public async Task<SugarChatResponse> SetMessageReadAsync(SetMessageReadByUserBasedOnMessageIdCommand command, CancellationToken cancellationToken = default)
         {
-            return await ExecuteAsync<SugarChatResponse>(requestHeaders, _setMessageReadUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse>(_setMessageReadUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> DeleteConversationAsync(RemoveConversationCommand command, CancellationToken cancellationToken = default, HttpRequestHeaders requestHeaders = null)
+        public async Task<SugarChatResponse> DeleteConversationAsync(RemoveConversationCommand command, CancellationToken cancellationToken = default)
         {
-            return await ExecuteAsync<SugarChatResponse>(requestHeaders, _deleteConversationUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse>(_deleteConversationUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> SetMessageReadSetByUserBasedOnGroupIdAsync(SetMessageReadByUserBasedOnGroupIdCommand command, CancellationToken cancellationToken = default, HttpRequestHeaders requestHeaders = null)
+        public async Task<SugarChatResponse> SetMessageReadSetByUserBasedOnGroupIdAsync(SetMessageReadByUserBasedOnGroupIdCommand command, CancellationToken cancellationToken = default)
         {
-            return await ExecuteAsync<SugarChatResponse>(requestHeaders, _setMessageReadSetByUserBasedOnGroupIdUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse>(_setMessageReadSetByUserBasedOnGroupIdUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> SetMessageReadByUserIdsBasedOnGroupIdAsync(SetMessageReadByUserIdsBasedOnGroupIdCommand command, CancellationToken cancellationToken = default, HttpRequestHeaders requestHeaders = null)
+        public async Task<SugarChatResponse> SetMessageReadByUserIdsBasedOnGroupIdAsync(SetMessageReadByUserIdsBasedOnGroupIdCommand command, CancellationToken cancellationToken = default)
         {
-            return await ExecuteAsync<SugarChatResponse>(requestHeaders, _setMessageReadByUserIdsBasedOnGroupIdUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse>(_setMessageReadByUserIdsBasedOnGroupIdUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> SetMessageUnreadByUserIdsBasedOnGroupIdAsync(SetMessageUnreadByUserIdsBasedOnGroupIdCommand command, CancellationToken cancellationToken = default, HttpRequestHeaders requestHeaders = null)
+        public async Task<SugarChatResponse> SetMessageUnreadByUserIdsBasedOnGroupIdAsync(SetMessageUnreadByUserIdsBasedOnGroupIdCommand command, CancellationToken cancellationToken = default)
         {
-            return await ExecuteAsync<SugarChatResponse>(requestHeaders, _setMessageUnreadByUserIdsBasedOnGroupIdUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse>(_setMessageUnreadByUserIdsBasedOnGroupIdUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
         }
     }
 }

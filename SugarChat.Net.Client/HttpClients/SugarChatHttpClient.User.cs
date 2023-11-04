@@ -4,7 +4,6 @@ using SugarChat.Message.Commands.Users;
 using SugarChat.Message.Dtos;
 using SugarChat.Message.Requests;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,35 +18,35 @@ namespace SugarChat.Net.Client.HttpClients
         private const string _batchAddUsersUrl = "api/user/batchAddUsers";
         private const string _removeAllUserUrl = "api/user/removeAll";
 
-        public async Task<SugarChatResponse<UserDto>> GetUserProfileAsync(GetUserRequest request, CancellationToken cancellationToken = default, HttpRequestHeaders requestHeaders = null)
+        public async Task<SugarChatResponse<UserDto>> GetUserProfileAsync(GetUserRequest request, CancellationToken cancellationToken = default)
         {
             var requestUrl = $"{_getUserProfileUrl}?id={request.Id}";
-            return await ExecuteAsync<SugarChatResponse<UserDto>>(requestHeaders, requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse<UserDto>>(requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> UpdateMyProfileAsync(UpdateUserCommand command, CancellationToken cancellationToken = default, HttpRequestHeaders requestHeaders = null)
+        public async Task<SugarChatResponse> UpdateMyProfileAsync(UpdateUserCommand command, CancellationToken cancellationToken = default)
         {
-            return await ExecuteAsync<SugarChatResponse>(requestHeaders, _updateMyProfileUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse>(_updateMyProfileUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> CreateUserAsync(AddUserCommand command, CancellationToken cancellationToken = default, HttpRequestHeaders requestHeaders = null)
+        public async Task<SugarChatResponse> CreateUserAsync(AddUserCommand command, CancellationToken cancellationToken = default)
         {
-            return await ExecuteAsync<SugarChatResponse>(requestHeaders, _createUserUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse>(_createUserUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> RemoveUserAsync(RemoveUserCommand command, CancellationToken cancellationToken = default, HttpRequestHeaders requestHeaders = null)
+        public async Task<SugarChatResponse> RemoveUserAsync(RemoveUserCommand command, CancellationToken cancellationToken = default)
         {
-            return await ExecuteAsync<SugarChatResponse>(requestHeaders, _removeUserUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse>(_removeUserUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> RemoveAllUserAsync(RemoveAllUserCommand command, CancellationToken cancellationToken = default, HttpRequestHeaders requestHeaders = null)
+        public async Task<SugarChatResponse> RemoveAllUserAsync(RemoveAllUserCommand command, CancellationToken cancellationToken = default)
         {
-            return await ExecuteAsync<SugarChatResponse>(requestHeaders, _removeAllUserUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse>(_removeAllUserUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> BatchAddUsers(BatchAddUsersCommand command, CancellationToken cancellationToken = default, HttpRequestHeaders requestHeaders = null)
+        public async Task<SugarChatResponse> BatchAddUsers(BatchAddUsersCommand command, CancellationToken cancellationToken = default)
         {
-            return await ExecuteAsync<SugarChatResponse>(requestHeaders, _batchAddUsersUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse>(_batchAddUsersUrl, HttpMethod.Post, JsonConvert.SerializeObject(command), cancellationToken).ConfigureAwait(false);
         }
     }
 }

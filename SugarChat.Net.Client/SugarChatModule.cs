@@ -1,11 +1,5 @@
 ﻿using Autofac;
 using SugarChat.Net.Client.HttpClients;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SugarChat.Net.Client
 {
