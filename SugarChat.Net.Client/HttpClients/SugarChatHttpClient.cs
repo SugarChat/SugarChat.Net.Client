@@ -1,30 +1,22 @@
 ﻿using Newtonsoft.Json;
 using SugarChat.Message.Commands.Friends;
-using SugarChat.Message.Commands.Groups;
-using SugarChat.Message.Commands.Users;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Linq;
-using SugarChat.Message.Commands.Conversations;
 using SugarChat.Net.Client.Exceptions;
 using System.IO;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using SugarChat.Message.Requests.Conversations;
-using SugarChat.Message.Commands.Messages;
-using SugarChat.Message.Requests;
 using SugarChat.Message.Requests.Groups;
-using SugarChat.Message.Commands.GroupUsers;
 using SugarChat.Message.Requests.Messages;
-using SugarChat.Message.Responses.Conversations;
 using SugarChat.Message.Basic;
 using SugarChat.Message.Requests.GroupUsers;
 using SugarChat.Message.Dtos;
 using SugarChat.Message.Dtos.Conversations;
-using SugarChat.Message.Dtos.GroupUsers;
 using SugarChat.Message.Paging;
 using System.Text;
 using SugarChat.Message.Commands.Emotions;
@@ -59,6 +51,13 @@ namespace SugarChat.Net.Client.HttpClients
         {
             _baseUrl = baseUrl;
             _httpClientFactory = httpClientFactory;
+        }
+
+        private Dictionary<string, string> _headers;
+
+        public void SetHttpClient(Dictionary<string,string> headers)
+        {
+            _headers = headers;
         }
 
         protected struct ObjectResponseResult<T>
@@ -118,20 +117,20 @@ namespace SugarChat.Net.Client.HttpClients
             }
         }
 
-        private async Task<T> ExecuteAsync<T>(HttpClient client,
-            string correlationId,
+        private async Task<T> ExecuteAsync<T>(
             string url,
             HttpMethod method,
             string requestString = "",
             CancellationToken cancellationToken = default)
         {
-            if (client == null)
+            var client = _httpClientFactory.GetHttpClient();
+            if (_headers != null)
             {
-                client = _httpClientFactory.GetHttpClient();
-                if (!string.IsNullOrWhiteSpace(correlationId))
-                    client.DefaultRequestHeaders.Add("x-correlation-id", correlationId);
+                foreach (var header in _headers)
+                {
+                    client.DefaultRequestHeaders.Add(header.Key, header.Value);
+                }
             }
-
             client.BaseAddress = new Uri(_baseUrl);
 
             try
@@ -182,58 +181,58 @@ namespace SugarChat.Net.Client.HttpClients
             }
         }
 
-        public async Task<string> GetConnectionUrlAsync(string userIdentifier, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
+        public async Task<string> GetConnectionUrlAsync(string userIdentifier, CancellationToken cancellationToken = default)
         {
             var requestUrl = $"{_getConnectionUrl}?userIdentifier={userIdentifier}";
-            return await ExecuteAsync<string>(httpClient, correlationId, requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<string>(requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> AddFriendAsync(AddFriendCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
+        public async Task<SugarChatResponse> AddFriendAsync(AddFriendCommand command, CancellationToken cancellationToken = default)
         {
-            return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _addFriendUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse>(_addFriendUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> RemoveFriendAsync(RemoveFriendCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
+        public async Task<SugarChatResponse> RemoveFriendAsync(RemoveFriendCommand command, CancellationToken cancellationToken = default)
         {
-            return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _removeFriendUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse>(_removeFriendUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> AddEmotionAsync(AddEmotionCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
+        public async Task<SugarChatResponse> AddEmotionAsync(AddEmotionCommand command, CancellationToken cancellationToken = default)
         {
-            return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _addEmotionUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse>(_addEmotionUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse> RemoveEmotionAsync(RemoveEmotionCommand command, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
+        public async Task<SugarChatResponse> RemoveEmotionAsync(RemoveEmotionCommand command, CancellationToken cancellationToken = default)
         {
-            return await ExecuteAsync<SugarChatResponse>(httpClient, correlationId, _removeEmotionUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse>(_removeEmotionUrl, HttpMethod.Post, JsonConvert.SerializeObject(command)).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse<IEnumerable<EmotionDto>>> GetUserEmotionsAsync(GetUserEmotionsRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
+        public async Task<SugarChatResponse<IEnumerable<EmotionDto>>> GetUserEmotionsAsync(GetUserEmotionsRequest request, CancellationToken cancellationToken = default)
         {
             var requestUrl = $"{_getUserEmotionsUrl}?userId={request.UserId}";
-            return await ExecuteAsync<SugarChatResponse<IEnumerable<EmotionDto>>>(httpClient, correlationId, requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse<IEnumerable<EmotionDto>>>(requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse<IEnumerable<EmotionDto>>> GetEmotionByIdsAsync(GetEmotionByIdsRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
+        public async Task<SugarChatResponse<IEnumerable<EmotionDto>>> GetEmotionByIdsAsync(GetEmotionByIdsRequest request, CancellationToken cancellationToken = default)
         {
-            return await ExecuteAsync<SugarChatResponse<IEnumerable<EmotionDto>>>(httpClient, correlationId, _getEmotionByIdsUrl, HttpMethod.Post, JsonConvert.SerializeObject(request), cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse<IEnumerable<EmotionDto>>>(_getEmotionByIdsUrl, HttpMethod.Post, JsonConvert.SerializeObject(request), cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse<IEnumerable<string>>> GetUserIdsByGroupIdsAsync(GetUserIdsByGroupIdsRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
+        public async Task<SugarChatResponse<IEnumerable<string>>> GetUserIdsByGroupIdsAsync(GetUserIdsByGroupIdsRequest request, CancellationToken cancellationToken = default)
         {
-            return await ExecuteAsync<SugarChatResponse<IEnumerable<string>>>(httpClient, correlationId, _getUserIdsByGroupIdsUrl, HttpMethod.Post, JsonConvert.SerializeObject(request), cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse<IEnumerable<string>>>(_getUserIdsByGroupIdsUrl, HttpMethod.Post, JsonConvert.SerializeObject(request), cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse<PagedResult<ConversationDto>>> GetConversationByKeywordAsync(GetConversationByKeywordRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
+        public async Task<SugarChatResponse<PagedResult<ConversationDto>>> GetConversationByKeywordAsync(GetConversationByKeywordRequest request, CancellationToken cancellationToken = default)
         {
-            return await ExecuteAsync<SugarChatResponse<PagedResult<ConversationDto>>>(httpClient, correlationId, _getConversationByKeywordUrl, HttpMethod.Post, JsonConvert.SerializeObject(request), cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse<PagedResult<ConversationDto>>>(_getConversationByKeywordUrl, HttpMethod.Post, JsonConvert.SerializeObject(request), cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<SugarChatResponse<IEnumerable<GroupDto>>> GetGroupByCustomPropertiesAsync(GetGroupByCustomPropertiesRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
+        public async Task<SugarChatResponse<IEnumerable<GroupDto>>> GetGroupByCustomPropertiesAsync(GetGroupByCustomPropertiesRequest request, CancellationToken cancellationToken = default)
         {
             var query = DictionariesToQuery("CustomProperties", request.CustomProperties);
             var requestUrl = $"{_getByCustomPropertiesUrl}?userId={request.UserId}&SearchAllGroup={request.SearchAllGroup}{query}";
-            return await ExecuteAsync<SugarChatResponse<IEnumerable<GroupDto>>>(httpClient, correlationId, requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse<IEnumerable<GroupDto>>>(requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
         private string DictionariesToQuery(string fieldName, IDictionary<string, string> dictionaries)
@@ -256,10 +255,10 @@ namespace SugarChat.Net.Client.HttpClients
             return query.ToString();
         }
 
-        public async Task<SugarChatResponse<ServerConfigurationsDto>> GetServerConfigurationsAsync(GetServerConfigurationsRequest request, CancellationToken cancellationToken = default, HttpClient httpClient = null, string correlationId = null)
+        public async Task<SugarChatResponse<ServerConfigurationsDto>> GetServerConfigurationsAsync(GetServerConfigurationsRequest request, CancellationToken cancellationToken = default)
         {
             var requestUrl = $"{_getServerConfigurationsUrl}";
-            return await ExecuteAsync<SugarChatResponse<ServerConfigurationsDto>>(httpClient, correlationId, requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
+            return await ExecuteAsync<SugarChatResponse<ServerConfigurationsDto>>(requestUrl, HttpMethod.Get, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
     }
 }
