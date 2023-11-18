@@ -28,8 +28,6 @@ namespace SugarChat.Net.Client
 {
     public interface ISugarChatClient
     {
-        void SetHttpClient(Dictionary<string, string> headers);
-
         Task<string> GetConnectionUrlAsync(string userIdentifier, CancellationToken cancellationToken = default);
 
         Task<SugarChatResponse<GetMessageListResponse>> GetMessageListAsync(GetMessageListRequest request, CancellationToken cancellationToken = default);
