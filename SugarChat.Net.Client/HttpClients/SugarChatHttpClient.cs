@@ -53,13 +53,6 @@ namespace SugarChat.Net.Client.HttpClients
             _httpClientFactory = httpClientFactory;
         }
 
-        private Dictionary<string, string> _headers;
-
-        public void SetHttpClient(Dictionary<string,string> headers)
-        {
-            _headers = headers;
-        }
-
         protected struct ObjectResponseResult<T>
         {
             public ObjectResponseResult(T responseObject, string responseText)
@@ -124,13 +117,6 @@ namespace SugarChat.Net.Client.HttpClients
             CancellationToken cancellationToken = default)
         {
             var client = _httpClientFactory.GetHttpClient();
-            if (_headers == null)
-            {
-                foreach (var header in _headers)
-                {
-                    client.DefaultRequestHeaders.Add(header.Key, header.Value);
-                }
-            }
             client.BaseAddress = new Uri(_baseUrl);
 
             try
