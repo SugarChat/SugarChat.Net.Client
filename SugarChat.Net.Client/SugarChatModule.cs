@@ -6,14 +6,14 @@ namespace SugarChat.Net.Client
 {
     public static class SugarChatModule
     {
-        public static void AddSugarChatClient(this ContainerBuilder builder, string baseUrl, Action<SugarChatClientOptions> setupAction)
+        public static void AddSugarChatClient(this ContainerBuilder builder, string baseUrl, Action<SugarChatClientOptions, IComponentContext> setupAction)
         {
             builder.RegisterType<SugarChatHttpClientFactory>().As<ISugarChatHttpClientFactory>();
             builder.Register(c =>
             {
                 var sugarChatHttpClientFactory = c.Resolve<ISugarChatHttpClientFactory>();
                 SugarChatClientOptions options = new SugarChatClientOptions();
-                setupAction(options);
+                setupAction(options, c);
                 Configure(options, sugarChatHttpClientFactory);
                 return new SugarChatHttpClient(baseUrl, sugarChatHttpClientFactory);
             }).As<ISugarChatClient>().InstancePerLifetimeScope();
