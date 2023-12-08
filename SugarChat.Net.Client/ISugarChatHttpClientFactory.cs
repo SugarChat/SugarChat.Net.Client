@@ -33,6 +33,7 @@ namespace SugarChat.Net.Client
             {
                 foreach (var header in _headers)
                 {
+                    client.DefaultRequestHeaders.Remove(header.Key);
                     client.DefaultRequestHeaders.Add(header.Key, header.Value);
                 }
             }
