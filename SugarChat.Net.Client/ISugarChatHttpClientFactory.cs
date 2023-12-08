@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using System.Collections.Generic;
 using System.Net.Http;
 
 namespace SugarChat.Net.Client
@@ -6,11 +7,15 @@ namespace SugarChat.Net.Client
     public interface ISugarChatHttpClientFactory
     {
         HttpClient GetHttpClient();
+
+        void SetHeaders(Dictionary<string, string> headers);
     }
 
     public class SugarChatHttpClientFactory : ISugarChatHttpClientFactory
     {
         private readonly ILifetimeScope _lifetimeScope;
+        public Dictionary<string, string> _headers { get; set; }
+
         public SugarChatHttpClientFactory(ILifetimeScope lifetimeScope)
         {
             _lifetimeScope = lifetimeScope;
@@ -18,12 +23,25 @@ namespace SugarChat.Net.Client
 
         public HttpClient GetHttpClient()
         {
-            var canResolve = _lifetimeScope.TryResolve<IHttpClientFactory>(out IHttpClientFactory httpClientFactory);
+            HttpClient client = new HttpClient();
+            var canResolve = _lifetimeScope.TryResolve(out IHttpClientFactory httpClientFactory);
             if (canResolve)
             {
-                return httpClientFactory.CreateClient();
+                client = httpClientFactory.CreateClient();
             }
-            return new HttpClient();
+            if (_headers != null)
+            {
+                foreach (var header in _headers)
+                {
+                    client.DefaultRequestHeaders.Add(header.Key, header.Value);
+                }
+            }
+            return client;
+        }
+
+        public void SetHeaders(Dictionary<string, string> headers)
+        {
+            _headers = headers;
         }
     }
 }
